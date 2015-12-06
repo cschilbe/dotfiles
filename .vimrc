@@ -32,6 +32,9 @@ colorscheme molokai
 set updatetime=250
 let g:gitgutter_realtime = 750
 
+" Buffer list
+nnoremap <c-b> :CtrlPBuffer<cr>
+
 
 " NERDTree settings
 map <C-n> :NERDTreeToggle<CR>
