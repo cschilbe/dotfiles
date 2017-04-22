@@ -88,6 +88,9 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'scrooloose/syntastic'
 
 Plugin 'majutsushi/tagbar'
+Plugin 'tpope/vim-dispatch'
+
+Plugin 'kchmck/vim-coffee-script'
 
 " " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -144,7 +147,7 @@ map <Leader>f :NERDTreeFind<CR>
 map <Leader>co :copen<CR>
 map <Leader>cl :cclose<CR>
 
-let g:rspec_command = '!spring rspec {spec}'
+let g:rspec_command = ':Dispatch spring rspec {spec}'
 "let ruby_fold=1
 
 " Set Git diff commands to always use vertical split
