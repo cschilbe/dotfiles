@@ -1,0 +1,162 @@
+set nocompatible 	" General setup
+
+filetype plugin on 	" Load plugins for filetypes
+filetype indent on 	" Set indent for filetypes
+set backspace=2		" Sane backspaces
+set backupcopy=yes 	" Backup files
+
+set hidden 		" Allow switching buffers without saving
+
+set tabstop=2
+set shiftwidth=2
+set expandtab    	" Turn tab into spaces
+
+set exrc 		" Use local .vimrc file per project to override any settings
+set laststatus=2 	" Show airline bar all the time
+set matchtime=5  	" Bracket blinking.
+set noshowmode   	" Shows vim mode
+set number       	" Turn on numbering of lines
+set showmatch    	" Show matching brackets.
+set secure              " Required for auto tagging
+
+" Match and search
+set hlsearch    	" highlight search
+set ignorecase  	" Do case in sensitive matching with
+set smartcase   	" be sensitive when there's a capital letter
+set incsearch   	" Search incrementally
+
+" Set shell
+set shell=/bin/zsh
+
+" Do not add new end of line to file when saving
+set noeol         " Not sure which version of this is correct (this one might be for version >= 8
+set nofixeol      " while this one should work for version >= 7.4
+
+" Color scheme settings
+set background=dark
+colorscheme PaperColor
+syntax on
+let &t_Co=256
+
+let g:snipMate = { 'snippet_version' : 1 }
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'MarcWeber/vim-addon-mw-utils'
+Plugin 'tomtom/tlib_vim'
+Plugin 'garbas/vim-snipmate'
+Plugin 'tpope/vim-sensible'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'vim-test/vim-test'
+Plugin 'slim-template/vim-slim.git'
+Plugin 'maciakl/vim-neatstatus'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+Plugin 'kien/ctrlp.vim'
+Plugin 'szw/vim-tags'
+Plugin 'honza/vim-snippets'
+Plugin 'ruanyl/vim-gh-line'
+Plugin 'ludovicchabant/vim-gutentags'
+Plugin 'elixir-editors/vim-elixir'
+Plugin 'yegappan/taglist'
+call vundle#end()
+
+call plug#begin('~/.vim/plugged')
+Plug 'yuezk/vim-js'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'preservim/nerdtree'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'mhartington/oceanic-next'
+call plug#end()
+
+let g:airline_powerline_fonts = 1
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+autocmd BufWritePre *.rb :%s/\s\+$//e
+
+let mapleader = ","
+
+source ~/.vim/coc.vim
+
+function! RubocopAutocorrect()
+  execute "!rubocop -a " . bufname("%")
+endfunction
+map <silent> <Leader>cop :call RubocopAutocorrect()<cr>
+
+try
+  nmap <silent> [c :call CocAction('diagnosticNext')<cr>
+  nmap <silent> ]c :call CocAction('diagnosticPrevious')<cr>
+endtry
+
+" Open tags in vertical split
+nnoremap <c-w><c-[> <c-w>v<c-]>
+
+" Keyboard mappings
+" Ctrl+b bring up buffer list
+nnoremap <c-b> :CtrlPBuffer<cr>
+map <c-n> :NERDTreeToggle<cr>
+map <Leader>f :NERDTreeFind<CR>
+
+map <Leader>co :copen<CR>
+map <Leader>cl :cclose<CR>
+
+map <Leader>gs :Gstatus<CR>
+
+nmap <silent> <leader>s :TestNearest<CR>
+nmap <silent> <leader>t :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
+let g:rspec_command = ':Dispatch spring rspec {spec}'
+"let g:test#ruby#rspec#executable = 'docker-compose -f ./docker-compose-test.yml -p ermanagementtest run worker bundle exec rspec' 
+"let g:test#ruby#rspec#executable = 'docker-compose -f ./docker-compose-test.yml -p ermanagementtest run --rm --service-ports --use-aliases worker bundle exec rspec'
+let g:test#ruby#rspec#executable = 'bundle exec rspec'
+let g:test#elixir#exunit#executable = 'docker-compose run --rm phoenix mix test'
+
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+let Tlist_Use_Right_Window   = 1
+let Tlist_GainFocus_On_ToggleOpen = 1
+nnoremap tt :TlistToggle<CR>
+
+" Start maximized
+au GUIEnter * simalt ~x
+
+" Persistant Undo
+set undodir=~/.vim/tmp/undo/      " a place to store the undo files, you need to create
+                                  " this directory: `mkdir -p ~/.vim/tmp/undo`
+set undofile
+set undolevels=1000               " maximum number of changes that can be undone
+set undoreload=10000              " maximum number lines to save for undo on a buffer reload
+
+set sessionoptions+=tabpages,globals
+
+" Automatically save the current session whenever vim is closed
+autocmd VimLeave * mksession! ~/.vim/shutdown_session.vim
+" <F7> restores that 'shutdown session'
+noremap <leader>rs :source ~/.vim/shutdown_session.vim<CR>
+" If you really want to, this next line should restore the shutdown session 
+" automatically, whenever you start vim.  (Commented out for now, in case 
+" somebody just copy/pastes this whole block)
+" 
+" autocmd VimEnter source ~/.vim/shutdown_session.vim<CR>
+" manually save a session with <F5>
+noremap <leader>ss :mksession! ~/.vim/manual_session.vim<cr>
+" recall the manually saved session with <F6>
+noremap <leader>rss :source ~/.vim/manual_session.vim<cr>

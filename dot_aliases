@@ -1,0 +1,6 @@
+alias vimo="vim -p $(git status -s -uno --porcelain | awk '{print $2}' | tr '\n' ' ')"
+alias mix="docker-compose run --rm phoenix mix"
+alias opp="dev run worker bundle exec rubocop --force-exclusion $(git fetch && git diff-tree -r --no-commit-id --name-only develop@\{u\} HEAD | xargs ls -1 2>/dev/null | (grep '\.rb$' || true) | tr '\n' ' ')"
+alias viopp="vim -p $(dev run worker bundle exec rubocop --force-exclusion --format files $(git fetch && git diff-tree -r --no-commit-id --name-only develop@\{u\} HEAD | xargs ls -1 2>/dev/null | (grep '\.rb$' || true) | tr '\n' ' ') | sed -e 's/^\/app\///' | tr '\n' ' ')"
+alias startngrok="~/Downloads/ngrok http --host-header="dashboard.easyredir.test" --domain=toad-engaging-blowfish.ngrok-free.app 443"
+alias startlocaltunnel="lt --port 443 --local-https --local-host dashboard.easyredir.test --allow-invalid-cert --print-requests --subdomain conrad-er-test"
